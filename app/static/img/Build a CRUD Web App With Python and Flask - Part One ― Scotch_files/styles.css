@@ -1,0 +1,190 @@
+#bgImg1 { position: absolute; top:251px; }
+
+#bgImg2 { position: absolute;top:251px; left:-300px; }
+
+
+.colorIN{ 
+	color:#FF9E16;
+}
+
+
+/* logos */
+
+#Allstate{
+	position: absolute;
+    width: 115px;
+    height: 30px;
+    bottom: 0px;
+    right: 5px;
+    background-image:url(../images/AllstateDS.svg);
+    background-repeat: no-repeat;
+    z-index: 300;
+}
+#Allstate1{
+	position: absolute;
+    width: 71px;
+    height: 15px;
+    top: 359px;
+    left: 94px;
+	opacity:0;
+    background-image:url(../images/Allstate1.svg);
+    background-repeat: no-repeat;
+    z-index: 300;
+}
+#hands{
+	position: absolute;
+	width: 80px;
+    top: 182px;
+    left: 90px;
+    z-index: 299;
+    opacity: 1;
+}
+
+#toBeIn { 
+	position: absolute;
+	color:#001C71;
+	font-size:64px;
+	line-height: 53px;
+	width: 200px;
+	left:15px;
+	top:20px;
+  	text-align: left;
+	word-spacing: -0.15em;
+	z-index: 210;
+}
+
+
+/* FRAMES */
+#frame1{
+	position: absolute;
+	font-size:35px;
+	line-height: 1.1; 
+	top:58px;
+	left: 16px;
+	width: 300px;
+  	text-align: left;
+  	-webkit-font-smoothing: antialiased;
+	z-index: 100;
+}
+
+#frame2 { 
+	position: absolute;
+	font-size:35px;
+	line-height: 1.1; 
+	top:84px;
+	left: 15px;
+	width: 300px;
+  	text-align: left;
+  	-webkit-font-smoothing: antialiased;
+  	font-weight:700;
+	z-index: 100;
+}
+
+#frame3{
+	position: absolute;
+	font-size:35px;
+	line-height: 1.18;  
+	top:81px;
+	left: 15px;
+	width: 300px;
+  	text-align: left;
+  	-webkit-font-smoothing: antialiased;
+  	font-weight:700;
+	z-index: 100;
+}
+#frame4{
+	position: absolute;
+	width:270px;
+	font-size:36px;
+	line-height: 33px; 
+	left:13px;
+	top:69px;
+  	text-align: left;
+	z-index: 210;
+	opacity:0;
+}
+
+#landing_sm { 
+	position: absolute;
+	width:300px;
+	left:13px;
+	top:339px;
+  	text-align: left;
+	z-index: 210;
+	opacity: 0;
+	font-size:17px;
+	line-height: 19px;
+	font-family: 'Objektiv Mk2';
+	font-weight: 800;
+	-webkit-font-smoothing: antialiased; 
+}
+
+#landing { 
+	position: absolute;
+	width:300px;
+	font-size:44px;
+	line-height:42px;
+	left:13px;
+	top:174px;
+  	text-align: left;
+		
+word-spacing: -3.1px;
+	z-index: 210;
+	opacity: 0;
+}
+
+#location{
+	position: absolute;
+	font-size: 15px;
+	line-height: 16px;
+	font-weight: 500;
+	top:126px;
+	left:300px;
+	z-index: 210;
+	width: 300px;
+font-family: 'Objektiv Mk2';
+	font-weight: 700;
+	-webkit-font-smoothing: antialiased; 
+
+}
+
+.plus{ 
+	color:#FFFFFF;
+	bottom: 6px;
+}
+
+#onlyAllstate {
+	position: absolute;
+	top:148px;
+	left:300px;
+	z-index: 210;
+}
+
+.reg{
+
+	font-size: 20px; 
+	line-height: 20px;
+	margin-left:-13px;
+    left: 0px;
+    bottom: 15px;
+    position: absolute;
+}
+
+
+
+/* CTA */
+
+#btn_cta {
+    position: absolute;
+    bottom: 0px;
+    z-index: 1200;
+    right: -200px;
+}
+
+#ctaCopy {
+    z-index: 1200;
+    font-size: 15px;
+    font-family: 'Objektiv Mk2';
+	font-weight: 800;
+    text-align: center;
+}

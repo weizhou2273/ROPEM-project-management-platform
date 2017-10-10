@@ -1,0 +1,72 @@
+#coop {
+
+}
+
+#agent_info{
+	position: absolute;
+	color:white;
+	left:116px;
+	top:117px;
+	font-family: 'Objektiv Mk2';
+	font-weight: 700;
+	font-size: 17px; 
+	line-height: 17px;
+	z-index: 300;
+	font-style: normal;
+  	
+	-webkit-font-smoothing: antialiased;
+	opacity: 0;
+}
+
+#agent{
+	position: absolute;
+	bottom:18px;
+	left: 15px;
+	z-index: 299;
+	opacity: 0;
+	
+}
+
+#coop_message{
+	position: absolute;
+	opacity: 0;
+	width: 300px;
+	top:40px;
+	z-index: 300;
+	-webkit-font-smoothing: antialiased;
+	opacity: 0;
+}
+
+.coop_text1{
+	position: absolute;
+	font-family: 'Objektiv Mk2';
+	font-weight: 700;
+  	font-style: normal;
+  
+  	font-size:20px;
+ 	line-height: 20px;
+  	left:20px;
+  	color: #001C71;
+}
+
+.coop_text2{
+	position: absolute;
+	font-family: 'Objektiv Mk2';
+	font-weight: 700;
+  	font-style: normal;
+
+  	font-size:21px;
+  	line-height: 20px;
+  	text-transform: uppercase;
+  	left:20px;
+  	top:47px;
+  	color:white;
+}
+
+#btn_cta_coop { font-family: 'Objektiv Mk2';
+	font-weight: 700; position: absolute; 
+	width: 160px; height:30px; bottom: 20px; right:-200px; background: #00339f;
+	 padding: 5px 20px 0px 10px; font-size: 22px;
+	line-height: 24px;  text-align: left; overflow: hidden; z-index: 350; cursor: pointer; }
+#ctaCopy_coop { position: relative; z-index: 340; color:#fff; }
+#arrow_coop { position: absolute; top:0; left:158px; padding-top:6px; }
