@@ -252,38 +252,36 @@ def list_projects():
     return render_template('admin/projects/projects.html',
                            projects=projects, title='Projects')
 
-@admin.route('/projects/assign/<int:id>', methods=['GET', 'POST'])
-@login_required
-def assign_project(id):
-    """
-    Assign a department and a role to an employee
-    """
-    check_admin()
+# @admin.route('/projects/assign/<int:id>', methods=['GET', 'POST'])
+# @login_required
+# def assign_project(id):
+#     """
+#     Assign a department and a role to an employee
+#     """
+#     check_admin()
 
-    project  = Project.query.get_or_404(id)
+#     project  = Project.query.get_or_404(id)
 
-    # prevent admin from being assigned a department or role
-    # if employee.is_admin:
-    #     abort(403)
+#     # prevent admin from being assigned a department or role
+#     # if employee.is_admin:
+#     #     abort(403)
 
-    form = ProjectAssignForm(obj=project)
-    if form.validate_on_submit():
-        project.name = form.name.data
-        project.description = form.description.data
-        project.department_id = form.department.data
-        # project.project_lead_id = form.project_leader.data
-        db.session.add(project)
-        db.session.commit()
-        flash('You have successfully assigned a department and role.')
+#     form = ProjectAssignForm(obj=project)
+#     if form.validate_on_submit():
+#         project.name = form.name.data
+#         project.description = form.description.data
+#         project.department_id = form.department.data
+#         # project.project_lead_id = form.project_leader.data
+#         db.session.add(project)
+#         db.session.commit()
+#         flash('You have successfully assigned a department and role.')
 
-        # redirect to the roles page
-        return redirect(url_for('admin.list_projects'))
+#         # redirect to the roles page
+#         return redirect(url_for('admin.list_projects'))
 
-    return render_template('admin/projects/project.html',
-                           project = project, form=form,
-                           title='Assign Project')
-
-
+#     return render_template('admin/projects/project.html',
+#                            project = project, form=form,
+#                            title='Assign Project')
 
 @admin.route('/projects/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -295,12 +293,14 @@ def edit_project(id):
 
     # add_project = False  
     project = Project.query.get_or_404(id)
-    
+
     form = ProjectAssignForm(obj=project)
     if form.validate_on_submit():
         project.name = form.name.data
         project.description = form.description.data
-        project.department_id = form.department.data
+        project.status= form.status.data
+        project.department = form.department.data
+        project.employee = form.project_lead.data
         db.session.add(project)
         db.session.commit()
         flash('You have successfully edited the project.')
@@ -345,7 +345,9 @@ def add_project():
     if form.validate_on_submit():
         project = Project(name=form.name.data,
                           description=form.description.data,
+                          status = form.status.data,
                           department = form.department.data,
+                          employee = form.project_lead.data
                           )
 
         try:

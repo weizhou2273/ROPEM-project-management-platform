@@ -43,8 +43,13 @@ class ProjectAssignForm(FlaskForm):
     """
     name = StringField('Name', validators=[DataRequired()])
     description = StringField('Description', validators=[DataRequired()])
+    status = SelectField('status', choices=[('Completed','Completed'),('In progress','In progress')])
     department = QuerySelectField(query_factory=lambda: Department.query.all(),
-                                  get_label="name")
+                                   get_label="name")
+    project_lead = QuerySelectField(query_factory=lambda: Employee.query.all(),
+                                   get_label="last_name")
+
+
     # role = QuerySelectField(query_factory=lambda: Role.query.all(),
     #                         get_label="name")
     # project_leader = QuerySelectField(query_factory=lambda: Employee.query.all(),

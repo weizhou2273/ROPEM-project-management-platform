@@ -22,10 +22,10 @@ class Employee(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
-    # project_id = db.Column(db.Integer,db.ForeignKey('projects.id'))
     is_admin = db.Column(db.Boolean, default=False)
-    # project = db.relationship('Project',backref='Employee',
-    #                             lazy = 'dynamic')
+    projects = db.relationship('Project',backref='employee',
+                                lazy ='dynamic')
+
     @property
     def password(self):
         """
@@ -67,7 +67,7 @@ class Department(db.Model):
     employees = db.relationship('Employee', backref='department',
                                 lazy='dynamic')
     projects = db.relationship('Project',backref='department',
-                                lazy = True)
+                                lazy ='dynamic')
     def __repr__(self):
         return '<Department: {}>'.format(self.name)
 
@@ -96,9 +96,9 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), unique=True)
     description = db.Column(db.String(200))
+    status = db.Column(db.String(200))
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
-    # project_lead_id = db.Column(db.Integer, db.ForeignKey('employees.id'))
-    # faculty_lead = db.Column(db.Integer, db.ForeignKey('employees.id'))
+    project_lead_id = db.Column(db.Integer, db.ForeignKey('employees.id'))
     # other_faculty = db.Column(db.Integer, db.ForeignKey('employees.id'))
 
 
