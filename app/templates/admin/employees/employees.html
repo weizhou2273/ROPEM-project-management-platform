@@ -11,7 +11,7 @@
         <br/>
         {{ utils.flashed_messages() }}
         <br/>
-        <h1 style="text-align:center;">Employees</h1>
+        <h1 style="text-align:center;">User Management</h1>
         {% if employees %}
           <hr class="intro-divider">
           <div class="center">
@@ -19,21 +19,16 @@
               <thead>
                 <tr>
                   <th width="15%"> Name </th>
-                  <th width="30%"> Department </th>
+                  <th width="30%"> Site </th>
                   <th width="30%"> Role </th>
+                  <!-- <th width="30%"> Lead Project Count </th> -->
+                  <th width="15%"> Involved Project Count </th>
+                  <th width="15%"> Administrator </th>
                   <th width="15%"> Assign </th>
                 </tr>
               </thead>
               <tbody>
               {% for employee in employees %}
-                {% if employee.is_admin %}
-                    <tr style="background-color: #aec251; color: white;">
-                        <td> <i class="fa fa-key"></i> Admin </td>
-                        <td> N/A </td>
-                        <td> N/A </td>
-                        <td> N/A </td>
-                    </tr>
-                {% else %}
                     <tr>
                       <td> {{ employee.first_name }} {{ employee.last_name }} </td>
                       <td>
@@ -51,17 +46,36 @@
                         {% endif %}
                       </td>
                       <td>
+                        {% if employee.project_lists %}
+                          {{ employee.project_lists.count() }}
+                        {% else %}
+                          0
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if employee.is_admin == 1%}
+                          Yes
+                        {% else %}
+                          No
+                        {% endif %}
+                      </td>
+                      <td>
                         <a href="{{ url_for('admin.assign_employee', id=employee.id) }}">
                           <i class="fa fa-user-plus"></i> Assign
                         </a>
                       </td>
                     </tr>
-                {% endif %}
               {% endfor %}
               </tbody>
             </table>
           </div>
+            <div style="text-align: center">
         {% endif %}
+          <a href="{{ url_for('auth.register') }}" class="btn btn-default btn-lg">
+            <i class="fa fa-plus"></i>
+            Add User
+          </a>
+        </div>
         </div>
       </div>
     </div>

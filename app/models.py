@@ -5,6 +5,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login_manager
 
+subs = db.Table('subs',
+    db.Column('project_id',db.Integer,db.ForeignKey('projects.id', ondelete='cascade')),
+    db.Column('member_id',db.Integer,db.ForeignKey('employees.id', ondelete='cascade')),
+    db.UniqueConstraint('project_id','member_id',name = 'member_project_id'),
+    )
+
+
 class Employee(UserMixin, db.Model):
     """
     Create an Employee table
@@ -25,7 +32,9 @@ class Employee(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     projects = db.relationship('Project',backref='employee',
                                 lazy ='dynamic')
-
+    project_list= db.relationship('Project',secondary=subs,backref=db.backref('project_member',lazy='dynamic'),
+                                            cascade='delete-orphan',
+                                            single_parent=True)
     @property
     def password(self):
         """
@@ -99,10 +108,18 @@ class Project(db.Model):
     status = db.Column(db.String(200))
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
     project_lead_id = db.Column(db.Integer, db.ForeignKey('employees.id'))
-    # other_faculty = db.Column(db.Integer, db.ForeignKey('employees.id'))
+    # project_member= db.relationship('Employee',secondary=subs,backref=db.backref('project_lists',lazy='dynamic'),
+    #                                            # cascade='delete-orphan',
+    #                                            single_parent=True
+    #                                            )
 
+
+    # project_members= db.relationship('Employee',secondary=subs,backref=db.backref('project_members',lazy='dynamic'))
+    # other_faculty = db.Column(db.Integer, db.ForeignKey('employees.id'))
+    # Project_member_id = db.Column(db.Integer,db.ForeignKey('employees.id'))
 
     def __repr__(self):
         return '<Project: {}>'.format(self.name)
+
 
 

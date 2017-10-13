@@ -9,8 +9,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 # local imports
 from config import app_config
-
-db = SQLAlchemy()
+app = Flask(__name__)
+db = SQLAlchemy(app)
 login_manager = LoginManager()
 
 def create_app(config_name):

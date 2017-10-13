@@ -25,13 +25,15 @@
                   {% if current_user.is_authenticated %}
                     {% if current_user.is_admin %}
                       <li><a href="{{ url_for('home.admin_dashboard') }}">Dashboard</a></li>
-                      <li><a href="{{ url_for('admin.list_projects') }}">Projects</a></li>
+                      <li><a href="{{ url_for('admin.list_projects') }}">Project Management</a></li>
+                      <li><a href="{{ url_for('admin.list_employees') }}">User Management</a></li>
                       <li><a href="{{ url_for('admin.list_departments') }}">Departments</a></li>
                       <li><a href="{{ url_for('admin.list_roles') }}">Roles</a></li>
-                      <li><a href="{{ url_for('admin.list_employees') }}">Employees</a></li>
+                      
 
                     {% else %}
                       <li><a href="{{ url_for('home.dashboard') }}">Dashboard</a></li>
+                      <li><a href="{{ url_for('admin.list_projects') }}">Projects</a></li>
                     {% endif %}
                     <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
                     <li><a><i class="fa fa-user"></i>  Hi, {{ current_user.username }}!</a></li>

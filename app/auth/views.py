@@ -33,6 +33,7 @@ def register():
     # load registration template
     return render_template('auth/register.html', form=form, title='Register')
 
+
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -72,5 +73,6 @@ def logout():
 
     # redirect to the login page
     return redirect(url_for('auth.login'))
+
 
 

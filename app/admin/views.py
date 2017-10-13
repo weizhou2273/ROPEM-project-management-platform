@@ -220,13 +220,14 @@ def assign_employee(id):
     employee = Employee.query.get_or_404(id)
 
     # prevent admin from being assigned a department or role
-    if employee.is_admin:
-        abort(403)
+    # if employee.is_admin:
+    #     abort(403)
 
     form = EmployeeAssignForm(obj=employee)
     if form.validate_on_submit():
         employee.department = form.department.data
         employee.role = form.role.data
+        employee.is_admin = form.administrator.data
         db.session.add(employee)
         db.session.commit()
         flash('You have successfully assigned a department and role.')
@@ -238,7 +239,6 @@ def assign_employee(id):
                            employee=employee, form=form,
                            title='Assign Employee')
 
-
 # Project Views
 @admin.route('/projects')
 @login_required
@@ -246,42 +246,12 @@ def list_projects():
     """
     List all projects
     """
-    check_admin()
+    # check_admin()
 
     projects = Project.query.all()
     return render_template('admin/projects/projects.html',
                            projects=projects, title='Projects')
 
-# @admin.route('/projects/assign/<int:id>', methods=['GET', 'POST'])
-# @login_required
-# def assign_project(id):
-#     """
-#     Assign a department and a role to an employee
-#     """
-#     check_admin()
-
-#     project  = Project.query.get_or_404(id)
-
-#     # prevent admin from being assigned a department or role
-#     # if employee.is_admin:
-#     #     abort(403)
-
-#     form = ProjectAssignForm(obj=project)
-#     if form.validate_on_submit():
-#         project.name = form.name.data
-#         project.description = form.description.data
-#         project.department_id = form.department.data
-#         # project.project_lead_id = form.project_leader.data
-#         db.session.add(project)
-#         db.session.commit()
-#         flash('You have successfully assigned a department and role.')
-
-#         # redirect to the roles page
-#         return redirect(url_for('admin.list_projects'))
-
-#     return render_template('admin/projects/project.html',
-#                            project = project, form=form,
-#                            title='Assign Project')
 
 @admin.route('/projects/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -295,12 +265,18 @@ def edit_project(id):
     project = Project.query.get_or_404(id)
 
     form = ProjectAssignForm(obj=project)
+
+    project_member = []
+    for idx, member in enumerate(form.project_member.data):
+        project_member.append(member['Last_Name'])
+    
     if form.validate_on_submit():
         project.name = form.name.data
         project.description = form.description.data
         project.status= form.status.data
         project.department = form.department.data
-        project.employee = form.project_lead.data
+        project.employee = form.employee.data
+        project.project_member = project_member
         db.session.add(project)
         db.session.commit()
         flash('You have successfully edited the project.')
@@ -322,6 +298,8 @@ def delete_project(id):
     check_admin()
 
     project = Project.query.get_or_404(id)
+    # for member in project.project_member:
+    #     project.project_member.remove(member)
     db.session.delete(project)
     db.session.commit()
     flash('You have successfully deleted the project.')
@@ -342,13 +320,21 @@ def add_project():
     add_project = True
 
     form = ProjectAssignForm()
+
+    project_member = []
+    for idx, member in enumerate(form.project_member.data):
+        project_member.append(member['Last_Name'])
+    
     if form.validate_on_submit():
         project = Project(name=form.name.data,
                           description=form.description.data,
                           status = form.status.data,
                           department = form.department.data,
-                          employee = form.project_lead.data
+                          employee = form.employee.data,
+                          project_member = project_member
                           )
+
+
 
         try:
             # add role to the database
@@ -365,3 +351,5 @@ def add_project():
     # load role template
     return render_template('admin/projects/project.html', add_project=add_project,
                            form=form, title='Add Project')
+
+
