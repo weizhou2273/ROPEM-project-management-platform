@@ -19,10 +19,11 @@
               <thead>
                 <tr>
                   <th width="15%"> Name </th>
-                  <th width="30%"> Site </th>
+                  <th width="5%"> Site </th>
                   <th width="30%"> Role </th>
-                  <!-- <th width="30%"> Lead Project Count </th> -->
+                  <th width="15%"> Lead Project Count </th>
                   <th width="15%"> Involved Project Count </th>
+                  <th width="15%"> Overall Project Count </th>
                   <th width="15%"> Administrator </th>
                   <th width="15%"> Assign </th>
                 </tr>
@@ -46,8 +47,22 @@
                         {% endif %}
                       </td>
                       <td>
+                        {% if employee.projects %}
+                          {{ employee.projects.count() }}
+                        {% else %}
+                          0
+                        {% endif %}
+                      </td>
+                      <td>
                         {% if employee.project_lists %}
                           {{ employee.project_lists.count() }}
+                        {% else %}
+                          0
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if employee.project_lists or employee.projects %}
+                          {{ employee.project_lists.count()+ employee.projects.count()}}
                         {% else %}
                           0
                         {% endif %}
