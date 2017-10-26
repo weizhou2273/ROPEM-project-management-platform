@@ -2,11 +2,11 @@ $(function() {
     $("div[data-toggle=fieldset]").each(function() {
         var $this = $(this);
             
-            //Add new entry
+        //Add new entry
         $this.find("button[data-toggle=fieldset-add-row]").click(function() {
             var target = $($(this).data("target"))
             console.log(target);
-            var oldrow = target.find("div[data-toggle=fieldset-entry]:last");
+            var oldrow = target.find("[data-toggle=fieldset-entry]:last");
             var row = oldrow.clone(true, true);
             console.log(row.find(":input")[0]);
             var elem_id = row.find(":input")[0].id;
@@ -20,10 +20,10 @@ $(function() {
             oldrow.after(row);
         }); //End add new entry
 
-                //Remove row
+        //Remove row
         $this.find("button[data-toggle=fieldset-remove-row]").click(function() {
-            if($this.find("div[data-toggle=fieldset-entry]").length > 1) {
-                var thisRow = $(this).closest("div[data-toggle=fieldset-entry]");
+            if($this.find("[data-toggle=fieldset-entry]").length > 1) {
+                var thisRow = $(this).closest("[data-toggle=fieldset-entry]");
                 thisRow.remove();
             }
         }); //End remove row

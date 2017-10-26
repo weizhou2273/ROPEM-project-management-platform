@@ -337,15 +337,16 @@ def edit_project(id):
     return render_template('admin/projects/project.html', project=project,
                            form=form, title="Edit project")
 
-@admin.route('/projects/edit/<int:id>')
+@admin.route('/projects/edit/<int:id>',methods=['GET', 'POST'])
 def index():
     project = Project.query.first()
-    form = ProjectAssignForm(obj = user)
+    form = ProjectAssignForm(obj = project)
     form.member.min_entries=3
     if form.validate_on_submit():
-        form.populate_obj(user)
+        form.populate_obj(project)
         db.session.commit()
     return render_template('admin/projects/project.html', form = form)
+
 
 @admin.route('/projects/delete/<int:id>', methods=['GET', 'POST'])
 @login_required

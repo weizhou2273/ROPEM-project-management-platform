@@ -56,6 +56,8 @@ class EmployeeForm(FlaskForm):
                                    get_label="last_name",
                                    allow_blank=True
                                    )
+    def __init__(self, csrf_enabled=False, *args, **kwargs):
+        super(EmployeeForm, self).__init__(csrf_enabled=False, *args, **kwargs)
 
 class ModelFieldList(FieldList):
     def __init__(self, *args, **kwargs):         
