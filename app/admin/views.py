@@ -227,7 +227,7 @@ def assign_employee(id):
     if form.validate_on_submit():
         employee.department = form.department.data
         employee.role = form.role.data
-        employee.is_admin = form.administrator.data
+        employee.is_admin = form.is_admin.data
         db.session.add(employee)
         db.session.commit()
         flash('You have successfully assigned a department and role.')
@@ -252,63 +252,6 @@ def list_projects():
     return render_template('admin/projects/projects.html',
                            projects=projects, title='Projects')
 
-
-@admin.route('/projects/edit/<int:id>', methods=['GET', 'POST'])
-@login_required
-def edit_project(id):
-    """
-    Edit a project
-    """
-    check_admin()
-
-    # add_project = False  
-    project = Project.query.get_or_404(id)
-
-    form = ProjectAssignForm(obj=project)
-
-    project_member = []
-    for idx, member in enumerate(form.project_member.data):
-        project_member.append(member['Last_Name'])
-    
-    if form.validate_on_submit():
-        project.name = form.name.data
-        project.description = form.description.data
-        project.status= form.status.data
-        project.department = form.department.data
-        project.employee = form.employee.data
-        project.project_member = project_member
-        db.session.add(project)
-        db.session.commit()
-        flash('You have successfully edited the project.')
-
-        # redirect to the roles page
-        return redirect(url_for('admin.list_projects'))
-
-    form.description.data = project.description
-    form.name.data = project.name
-    return render_template('admin/projects/project.html', project=project,
-                           form=form, title="Edit project")
-
-@admin.route('/projects/delete/<int:id>', methods=['GET', 'POST'])
-@login_required
-def delete_project(id):
-    """
-    Delete a role from the database
-    """
-    check_admin()
-
-    project = Project.query.get_or_404(id)
-    # for member in project.project_member:
-    #     project.project_member.remove(member)
-    db.session.delete(project)
-    db.session.commit()
-    flash('You have successfully deleted the project.')
-
-    # redirect to the roles page
-    return redirect(url_for('admin.list_projects'))
-
-    return render_template(title="Delete Project")
-
 @admin.route('/projects/add', methods=['GET', 'POST'])
 @login_required
 def add_project():
@@ -322,8 +265,9 @@ def add_project():
     form = ProjectAssignForm()
 
     project_member = []
-    for idx, member in enumerate(form.project_member.data):
-        project_member.append(member['Last_Name'])
+    for idx, member in enumerate(form.member.data):
+        project_member.append(member['project_lists'])
+    print(project_member)
     
     if form.validate_on_submit():
         project = Project(name=form.name.data,
@@ -353,3 +297,72 @@ def add_project():
                            form=form, title='Add Project')
 
 
+@admin.route('/projects/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_project(id):
+    """
+    Edit a project
+    """
+    check_admin()
+ 
+    # add_project = False  
+    project = Project.query.get_or_404(id)
+
+    form = ProjectAssignForm(obj=project)
+
+    project_member = []
+    for idx, member in enumerate(form.member.data):
+        if member != '':
+            project_member.append(member['project_lists'])
+        else:
+            pass
+  
+
+    if form.validate_on_submit():
+        project.name = form.name.data
+        project.description = form.description.data
+        project.status= form.status.data
+        project.department = form.department.data
+        project.employee = form.employee.data
+        project.project_member = project_member
+        db.session.add(project)
+        db.session.commit()
+        flash('You have successfully edited the project.')
+
+        # redirect to the project list page
+        return redirect(url_for('admin.list_projects'))
+
+
+
+    return render_template('admin/projects/project.html', project=project,
+                           form=form, title="Edit project")
+
+@admin.route('/projects/edit/<int:id>')
+def index():
+    project = Project.query.first()
+    form = ProjectAssignForm(obj = user)
+    form.member.min_entries=3
+    if form.validate_on_submit():
+        form.populate_obj(user)
+        db.session.commit()
+    return render_template('admin/projects/project.html', form = form)
+
+@admin.route('/projects/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_project(id):
+    """
+    Delete a role from the database
+    """
+    check_admin()
+
+    project = Project.query.get_or_404(id)
+    # for member in project.project_member:
+    #     project.project_member.remove(member)
+    db.session.delete(project)
+    db.session.commit()
+    flash('You have successfully deleted the project.')
+
+    # redirect to the roles page
+    return redirect(url_for('admin.list_projects'))
+
+    return render_template(title="Delete Project")

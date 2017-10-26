@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 # local imports
 from config import app_config
 app = Flask(__name__)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 

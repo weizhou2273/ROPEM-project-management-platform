@@ -32,9 +32,11 @@ class Employee(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     projects = db.relationship('Project',backref='employee',
                                 lazy ='dynamic')
-    # project_list= db.relationship('Project',secondary=subs,backref=db.backref('project_member',lazy='dynamic'),
+
+    # project_list= db.relationship('Project',secondary=subs,backref=db.backref('member',lazy='dynamic'),
     #                                         cascade='delete-orphan',
-    #                                         single_parent=True)
+    #                                         single_parent=True
+    #                                         )
     @property
     def password(self):
         """
@@ -56,7 +58,7 @@ class Employee(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return '<Employee: {}>'.format(self.username)
+        return '{}'.format(self.username)
 
 # Set up user_loader
 @login_manager.user_loader
@@ -108,9 +110,11 @@ class Project(db.Model):
     status = db.Column(db.String(200))
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
     project_lead_id = db.Column(db.Integer, db.ForeignKey('employees.id'))
-    project_member= db.relationship('Employee',secondary=subs,backref=db.backref('project_lists',lazy='dynamic'),
-                                               # cascade='delete-orphan',
-                                               single_parent=True
+    project_member= db.relationship('Employee',
+                                    secondary=subs,
+                                    backref=db.backref('project_lists',lazy='dynamic'),
+                                    # cascade='delete-orphan',
+                                    single_parent=True
                                                )
 
     def __repr__(self):

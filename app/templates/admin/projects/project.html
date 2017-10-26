@@ -21,7 +21,40 @@
                 <h1>Edit Project</h1>
             {% endif %}
             <br/>
-            {{ wtf.quick_form(form) }}
+
+            <form  method="post" role="form">       
+                <dl>
+                {{ form.csrf_token }}
+                {{ wtf.form_field(form.name) }}
+                {{ wtf.form_field(form.description) }}
+                {{ wtf.form_field(form.status) }} {{ wtf.form_field(form.department) }}
+                {{ wtf.form_field(form.employee) }}
+<!--                 {% for option in form.member %}
+                    {{'Project Member'}} {{option}}
+                {% endfor %}
+ -->
+                <div data-toggle="fieldset" id="phone-fieldset">
+                         {{ form.member.label }} <button type="button" data-toggle="fieldset-add-row"
+                                                          data-target="#phone-fieldset">+</button>
+                        <table class="table table-striped table-bordered">
+                            <tr>
+                                <th>Number</th>
+                                <th></th>
+                            </tr>
+                            {% for member in form.member %}
+                                <tr data-toggle="fieldset-entry">
+                                    <td>{{ member }}</td>
+                                    <td><button type="button" data-toggle="fieldset-remove-row" id="phone-{{loop.index0}}-remove">-</button></td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>                            
+                <input class='btn btn-primary' type="submit" name="submit" value='Submit'>
+
+                </dl>
+            </form>
+            <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+            <script src="{{ url_for('static', filename='js/page.js') }}"></script>
         </div>
       </div>
     </div>
