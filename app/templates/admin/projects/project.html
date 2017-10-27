@@ -26,8 +26,9 @@
                 <dl>
                 {{ form.csrf_token }}
                 {{ wtf.form_field(form.name) }}
-                {{ wtf.form_field(form.description) }}
+                {{ wtf.form_field(form.description)}}
                 {{ wtf.form_field(form.status) }} {{ wtf.form_field(form.department) }}
+                {{ wtf.form_field(form.start_date)}}
                 {{ wtf.form_field(form.employee) }}
 <!--                 {% for option in form.member %}
                     {{'Project Member'}} {{option}}

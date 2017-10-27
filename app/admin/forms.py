@@ -2,8 +2,11 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectMultipleField,SelectField,\
-					TextAreaField,FormField, FieldList,RadioField,BooleanField
-from wtforms.validators import DataRequired
+					TextAreaField,FormField, FieldList,RadioField,BooleanField,\
+					DateField
+from wtforms_components import DateTimeField
+from wtforms.validators import DataRequired, Email, EqualTo
+
 from wtforms.ext.sqlalchemy.fields import QuerySelectField#,QuerySelectMultipleField
 from wtforms_alchemy.fields import QuerySelectMultipleField
 from wtforms_alchemy import ModelForm, ModelFieldList
@@ -35,11 +38,16 @@ class EmployeeAssignForm(FlaskForm):
     """
     Form for admin to assign departments and roles to employees
     """
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+
     department = QuerySelectField(query_factory=lambda: Department.query.all(),
                                   get_label="name")
     role = QuerySelectField(query_factory=lambda: Role.query.all(),
                             get_label="name")
     is_admin = BooleanField('is_admin',default=False)
+
     submit = SubmitField('Submit')
 
 class EmployeeForm(FlaskForm):
@@ -88,13 +96,12 @@ class ProjectAssignForm(FlaskForm):
     employee = QuerySelectField(query_factory=lambda: Employee.query.all(),
                                    get_label="last_name")
     member = ModelFieldList(FormField(EmployeeForm),
-    						min_entries=3,
+    						min_entries=1,
     						model=Employee)
-
-    # member = QuerySelectMultipleField(query_factory=lambda: Employee.query.all(),
-	   #                                get_pk = lambda e: e.id,
-	   #                                get_label = lambda e: e.first_name + ' ' +e.last_name,
-	   #                                option_widget = widgets.CheckboxInput(),
-	   #                                widget = widgets.ListWidget(prefix_label=False))
-
-
+    start_date =  DateTimeField(
+        'Start Date',
+        # validators=[DateRange(
+        #     min=datetime(2000, 1, 1),
+        #     max=datetime(2099, 12, 31)
+        # )]
+        )

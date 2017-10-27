@@ -225,6 +225,9 @@ def assign_employee(id):
 
     form = EmployeeAssignForm(obj=employee)
     if form.validate_on_submit():
+        employee.email = form.email.data
+        employee.first_name = form.first_name.data
+        employee.last_name = form.last_name.data
         employee.department = form.department.data
         employee.role = form.role.data
         employee.is_admin = form.is_admin.data
@@ -251,6 +254,18 @@ def list_projects():
     projects = Project.query.all()
     return render_template('admin/projects/projects.html',
                            projects=projects, title='Projects')
+
+@admin.route('/projects/view/<int:id>', methods=['GET', 'POST'])
+@login_required
+def view_project(id):
+    """
+    View project detail
+    """
+
+    project = Project.query.get_or_404(id)
+    return render_template('admin/projects/view_project.html',
+                           project=project, title='Project')
+
 
 @admin.route('/projects/add', methods=['GET', 'POST'])
 @login_required
@@ -341,7 +356,7 @@ def edit_project(id):
 def index():
     project = Project.query.first()
     form = ProjectAssignForm(obj = project)
-    form.member.min_entries=3
+    form.member.min_entries=1
     if form.validate_on_submit():
         form.populate_obj(project)
         db.session.commit()

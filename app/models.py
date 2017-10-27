@@ -2,7 +2,7 @@
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from datetime import datetime
 from app import db, login_manager
 
 subs = db.Table('subs',
@@ -116,7 +116,7 @@ class Project(db.Model):
                                     # cascade='delete-orphan',
                                     single_parent=True
                                                )
-
+    start_date = db.Column(db.DateTime, nullable=True)
     def __repr__(self):
         return '<Project: {}>'.format(self.name)
 
