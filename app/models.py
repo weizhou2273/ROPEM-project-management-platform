@@ -32,10 +32,10 @@ class Employee(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     projects = db.relationship('Project',backref='employee',
                                 lazy ='dynamic')
-
-    # project_list= db.relationship('Project',secondary=subs,backref=db.backref('member',lazy='dynamic'),
-    #                                         cascade='delete-orphan',
-    #                                         single_parent=True
+    projects_list = db.relationship('Project',backref='member',lazy='dynamic')
+    # project_list= db.relationship('Project',secondary=subs,backref=db.backref('member',lazy='dynamic')
+    #                                         # cascade='delete-orphan',
+    #                                         # single_parent=False
     #                                         )
     @property
     def password(self):

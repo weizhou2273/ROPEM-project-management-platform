@@ -3,19 +3,17 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectMultipleField,SelectField,\
 					TextAreaField,FormField, FieldList,RadioField,BooleanField,\
-					DateField
+					DateField,validators
 from wtforms_components import DateTimeField
 from wtforms.validators import DataRequired, Email, EqualTo
-
-from wtforms.ext.sqlalchemy.fields import QuerySelectField#,QuerySelectMultipleField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms_alchemy.fields import QuerySelectMultipleField
 from wtforms_alchemy import ModelForm, ModelFieldList
 from wtforms import widgets
-# from flask.ext.wtf import Form
 from wtforms.fields import FormField
-
-import wtforms as wtf,validators
 from ..models import Department, Role, Project, Employee
+
+
 
 class DepartmentForm(FlaskForm):
     """
@@ -50,22 +48,17 @@ class EmployeeAssignForm(FlaskForm):
 
     submit = SubmitField('Submit')
 
-class EmployeeForm(FlaskForm):
-    # Last_Name = SelectField('Last_Name',validators = [DataRequired()], #coerce=int,
-    #     choices = [x.name for x in Role.query.all() ])
-    # role = QuerySelectField(query_factory=lambda: Role.query.all(),
-    #                                get_label="name",
-    #                                allow_blank=True)
-    # project_lists = SelectField('Member',
-    # 							choices = [(e.id,e.last_name) for e in Employee.query.all()]
-    #                                )
 
-    project_lists = QuerySelectField(query_factory=lambda: Employee.query.order_by(Employee.last_name),
+class EmployeeForm(FlaskForm):
+    project_member = QuerySelectField(query_factory=lambda: Employee.query.order_by(Employee.last_name),
                                    get_label="last_name",
                                    allow_blank=True
                                    )
     def __init__(self, csrf_enabled=False, *args, **kwargs):
         super(EmployeeForm, self).__init__(csrf_enabled=False, *args, **kwargs)
+
+
+
 
 class ModelFieldList(FieldList):
     def __init__(self, *args, **kwargs):         
@@ -84,10 +77,6 @@ class ModelFieldList(FieldList):
         super(ModelFieldList, self).populate_obj(obj, name)
 
 class ProjectAssignForm(FlaskForm):
-    """
-    Form for admin to assign departments and roles to projects
-    """
-
     name = StringField('Name', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     status = SelectField('status', choices=[('Completed','Completed'),('In progress','In progress')])
@@ -95,13 +84,8 @@ class ProjectAssignForm(FlaskForm):
                                    get_label="name")
     employee = QuerySelectField(query_factory=lambda: Employee.query.all(),
                                    get_label="last_name")
-    member = ModelFieldList(FormField(EmployeeForm),
+    project_member = ModelFieldList(FormField(EmployeeForm),
     						min_entries=1,
     						model=Employee)
-    start_date =  DateTimeField(
-        'Start Date',
-        # validators=[DateRange(
-        #     min=datetime(2000, 1, 1),
-        #     max=datetime(2099, 12, 31)
-        # )]
-        )
+    start_date = DateField('Pick a Date', format="%m/%d/%Y", validators=[DataRequired()])
+    

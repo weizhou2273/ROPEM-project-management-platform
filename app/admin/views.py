@@ -280,9 +280,11 @@ def add_project():
     form = ProjectAssignForm()
 
     project_member = []
-    for idx, member in enumerate(form.member.data):
-        project_member.append(member['project_lists'])
-    print(project_member)
+    for idx, member in enumerate(form.project_member.data):
+        if member == None:
+            project_member = project_member
+        else:
+            project_member.append(member['project_member'])
     
     if form.validate_on_submit():
         project = Project(name=form.name.data,
@@ -326,11 +328,11 @@ def edit_project(id):
     form = ProjectAssignForm(obj=project)
 
     project_member = []
-    for idx, member in enumerate(form.member.data):
-        if member != '':
-            project_member.append(member['project_lists'])
+    for idx, member in enumerate(form.project_member.data):
+        if member == None:
+            project_member = project_member
         else:
-            pass
+            project_member.append(member['project_member'])
   
 
     if form.validate_on_submit():
@@ -339,41 +341,55 @@ def edit_project(id):
         project.status= form.status.data
         project.department = form.department.data
         project.employee = form.employee.data
-        project.project_member = project_member
+        project.start_date = form.start_date.data
+        project.project_member = [x for x in project.project_member + project_member if x is not None]
         db.session.add(project)
         db.session.commit()
+        # flash('{}'.format([x for x in project.project_member + project_member if x is not None]))
+        # flash('{}'.format(project.project_member))
+        # flash('{}'.format(project_member))
         flash('You have successfully edited the project.')
-
-        # redirect to the project list page
         return redirect(url_for('admin.list_projects'))
-
-
-
-    return render_template('admin/projects/project.html', project=project,
+    return render_template('admin/projects/edit_project.html', project=project,
                            form=form, title="Edit project")
+
 
 @admin.route('/projects/edit/<int:id>',methods=['GET', 'POST'])
 def index():
     project = Project.query.first()
     form = ProjectAssignForm(obj = project)
-    form.member.min_entries=1
+    form.project_member.min_entries=1
     if form.validate_on_submit():
         form.populate_obj(project)
         db.session.commit()
     return render_template('admin/projects/project.html', form = form)
+
+@admin.route('/projects/delete/<int:pid>/<int:mid>', methods=['GET', 'POST'])
+@login_required
+def delete_project_member(pid,mid):
+    check_admin()
+
+    project = Project.query.get_or_404(pid)
+    member  = Employee.query.get_or_404(mid)
+    project.project_member.remove(member)
+    db.session.commit()
+
+    # redirect to the edit project page
+    return redirect(url_for('admin.edit_project',id=pid))
+
+    return render_template(title="Delete Project")
+
 
 
 @admin.route('/projects/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_project(id):
     """
-    Delete a role from the database
+    Delete a project member from the database
     """
     check_admin()
 
     project = Project.query.get_or_404(id)
-    # for member in project.project_member:
-    #     project.project_member.remove(member)
     db.session.delete(project)
     db.session.commit()
     flash('You have successfully deleted the project.')
@@ -382,3 +398,7 @@ def delete_project(id):
     return redirect(url_for('admin.list_projects'))
 
     return render_template(title="Delete Project")
+
+
+
+
