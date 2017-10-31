@@ -42,14 +42,14 @@
                 <h1></h1>
 
                 <div data-toggle="fieldset" id="phone-fieldset">
-                         {{ form.project_member.label }} <button type="button" data-toggle="fieldset-add-row"
+                         {{ form.members.label }} <button type="button" data-toggle="fieldset-add-row"
                                                           data-target="#phone-fieldset">+</button>
                         <table class="table table-striped table-bordered">
                             <tr>
                                 <th>Number</th>
                                 <th></th>
                             </tr>
-                            {% for member in form.project_member %}
+                            {% for member in form.members %}
                                 <tr data-toggle="fieldset-entry">
                                     <td>{{ member }}</td>
                                     <td><button type="button" data-toggle="fieldset-remove-row" id="phone-{{loop.index0}}-remove">-</button></td>

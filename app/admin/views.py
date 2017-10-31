@@ -280,11 +280,11 @@ def add_project():
     form = ProjectAssignForm()
 
     project_member = []
-    for idx, member in enumerate(form.project_member.data):
-        if member == None:
-            project_member = project_member
-        else:
-            project_member.append(member['project_member'])
+    for idx, member in enumerate(form.members.data):
+        # if member == None:
+        #     project_member = project_member
+        # else:
+        project_member.append(member['project_member'])
     
     if form.validate_on_submit():
         project = Project(name=form.name.data,
@@ -328,11 +328,11 @@ def edit_project(id):
     form = ProjectAssignForm(obj=project)
 
     project_member = []
-    for idx, member in enumerate(form.project_member.data):
-        if member == None:
-            project_member = project_member
-        else:
-            project_member.append(member['project_member'])
+    for idx, member in enumerate(form.members.data):
+        # if member == None:
+        #     project_member = project_member
+        # else:
+        project_member.append(member['project_member'])
   
 
     if form.validate_on_submit():
@@ -358,7 +358,7 @@ def edit_project(id):
 def index():
     project = Project.query.first()
     form = ProjectAssignForm(obj = project)
-    form.project_member.min_entries=1
+    form.members.min_entries=1
     if form.validate_on_submit():
         form.populate_obj(project)
         db.session.commit()

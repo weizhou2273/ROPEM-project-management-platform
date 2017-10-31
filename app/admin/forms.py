@@ -84,7 +84,7 @@ class ProjectAssignForm(FlaskForm):
                                    get_label="name")
     employee = QuerySelectField(query_factory=lambda: Employee.query.all(),
                                    get_label="last_name")
-    project_member = ModelFieldList(FormField(EmployeeForm),
+    members = ModelFieldList(FormField(EmployeeForm),
     						min_entries=1,
     						model=Employee)
     start_date = DateField('Pick a Date', format="%m/%d/%Y", validators=[DataRequired()])
