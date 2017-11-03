@@ -254,6 +254,21 @@ def list_projects():
     projects = Project.query.all()
     return render_template('admin/projects/projects.html',
                            projects=projects, title='Projects')
+    
+@admin.route('/member_projects/<int:id>')
+@login_required
+def list_member_projects(id):
+    """
+    List all projects of selected member
+    """
+    employee = Employee.query.get_or_404(id)
+    projects = Project.query.filter(Project.project_lead_id==id).all()
+    join_projects = Project.query.filter(Project.project_member.contains(employee)).all()
+    return render_template('admin/projects/view_member_projects.html',
+                           projects=projects, 
+                           employee = employee, 
+                           join_projects = join_projects,
+                           title='Projects')
 
 @admin.route('/projects/view/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -281,9 +296,6 @@ def add_project():
 
     project_member = []
     for idx, member in enumerate(form.members.data):
-        # if member == None:
-        #     project_member = project_member
-        # else:
         project_member.append(member['project_member'])
     
     if form.validate_on_submit():
@@ -291,22 +303,20 @@ def add_project():
                           description=form.description.data,
                           status = form.status.data,
                           department = form.department.data,
-                          employee = form.employee.data,
-                          project_member = project_member
+                          project_lead = form.project_lead.data,
+                          project_member = project_member,
+                          tags = form.tags.data
                           )
-
-
-
         try:
-            # add role to the database
+            # add project to the database
             db.session.add(project)
             db.session.commit()
             flash('You have successfully added a new project.')
         except:
-            # in case role name already exists
+            # in case project name already exists
             flash('Error: Project name already exists.')
 
-        # redirect to the roles page
+        # redirect to the list_projects page
         return redirect(url_for('admin.list_projects'))
 
     # load role template
@@ -340,16 +350,14 @@ def edit_project(id):
         project.description = form.description.data
         project.status= form.status.data
         project.department = form.department.data
-        project.employee = form.employee.data
+        project.project_lead = form.project_lead.data
         project.start_date = form.start_date.data
         project.project_member = [x for x in project.project_member + project_member if x is not None]
+        project.tags = form.tags.data
         db.session.add(project)
         db.session.commit()
-        # flash('{}'.format([x for x in project.project_member + project_member if x is not None]))
-        # flash('{}'.format(project.project_member))
-        # flash('{}'.format(project_member))
         flash('You have successfully edited the project.')
-        return redirect(url_for('admin.list_projects'))
+        return redirect(url_for('admin.view_project',id=id))
     return render_template('admin/projects/edit_project.html', project=project,
                            form=form, title="Edit project")
 

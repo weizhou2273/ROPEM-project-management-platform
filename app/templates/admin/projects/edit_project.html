@@ -1,5 +1,6 @@
 <!-- app/templates/admin/projects/edit_project.html -->
 
+{% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
 {% block title %}
@@ -10,31 +11,27 @@
     {% endif %}
 {% endblock %}
 {% block body %}
-
+<head>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
 <div class="content-section">
  <div class="outer">
     <div class="middle">
       <div class="inner">
         <div class="center">
                 <h1 style="text-align:center;">Edit Project</h1>
+            {{ utils.flashed_messages() }}
             <br/>
-
+            
             <form  method="post" role="form" action="">       
                 <dl>
                 {{ form.csrf_token }}
                 {{ wtf.form_field(form.name) }}
                 {{ wtf.form_field(form.description)}}
                 {{ wtf.form_field(form.status) }} {{ wtf.form_field(form.department) }}
-                {{ wtf.form_field(form.employee) }}
-                <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-                <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-                <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-                <script>
-                $(function() {
-                    $( ".dtpick" ).datepicker();
-                });
-                </script>
-                {{ form.start_date(class="dtpick") }}
+                {{ wtf.form_field(form.project_lead) }}
+                {{ wtf.form_field(form.start_date) }} <h6>(Date format: MM/DD/YYYY)</h6>
+                {{ wtf.form_field(form.tags) }}
                 <h1></h1>
 
             <h4 style="text-align:left;">Current Project Member</h4>
@@ -52,7 +49,7 @@
                 {% for member in project.project_member %}
                  <tr>
                   <td>{{ member.first_name}} {{member.last_name}}</td>
-                  <td>{{ member.department.description}}</td>
+                  <td>{{ member.department.name}}</td>
                   <td>{{ member.role.name }}</td>
                   <td> <a href="{{ url_for('admin.delete_project_member', pid=project.id, mid=member.id) }}">
                       <i class="fa fa-pencil"></i> Delete 
@@ -61,8 +58,7 @@
                 </tr> 
                 {%endfor%}
               </tbody>
-              
-                         {{ form.members.label }} <button type="button" data-toggle="fieldset-add-row"
+                         {{ 'Add member' }} <button type="button" data-toggle="fieldset-add-row"
                                                           data-target="#phone-fieldset">+</button>
                             {% for member in form.members %}
                                 <tr data-toggle="fieldset-entry">

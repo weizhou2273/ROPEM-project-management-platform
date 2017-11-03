@@ -15,23 +15,29 @@
         {% if employees %}
           <hr class="intro-divider">
           <div class="center">
-            <table class="table table-striped table-bordered">
+          <body>
+            <table class="table table-striped  table-hover display" id="table_id">
               <thead>
                 <tr>
                   <th width="15%"> Name </th>
                   <th width="5%"> Site </th>
                   <th width="30%"> Role </th>
-                  <th width="15%"> Lead Project Count </th>
-                  <th width="15%"> Involved Project Count </th>
+                 <!--  <th width="15%"> Lead Project Count </th>
+                  <th width="15%"> Involved Project Count </th> -->
                   <th width="15%"> Overall Project Count </th>
                   <th width="15%"> Administrator </th>
-                  <th width="15%"> Edit </th>
+                  <th width="15%"> Edit Profile</th>
                 </tr>
               </thead>
               <tbody>
               {% for employee in employees %}
                     <tr>
-                      <td> {{ employee.first_name }} {{ employee.last_name }} </td>
+
+                      <td> <a href="{{ url_for('admin.list_member_projects', id=employee.id) }}">
+                      <i class="fa fa-pencil"></i>
+                      {{ employee.first_name }} {{ employee.last_name }} </a>
+                      </td>
+                      
                       <td>
                         {% if employee.department %}
                           {{ employee.department.name }}
@@ -46,7 +52,7 @@
                           -
                         {% endif %}
                       </td>
-                      <td>
+<!--                       <td>
                         {% if employee.projects %}
                           {{ employee.projects.count() }}
                         {% else %}
@@ -59,7 +65,7 @@
                         {% else %}
                           0
                         {% endif %}
-                      </td>
+                      </td> -->
                       <td>
                         {% if employee.project_lists or employee.projects %}
                           {{ employee.project_lists.count()+ employee.projects.count()}}
@@ -83,6 +89,22 @@
               {% endfor %}
               </tbody>
             </table>
+                      <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+            <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+            <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+            <script type="text/javascript">
+                $(document).ready( function () {
+                    $('#table_id').DataTable({
+                      "bPaginate": true,
+                      "bLengthChange": true,
+                      "bFilter": true,
+                      "bSort": true,
+                      "bInfo": true,
+                      "bAutoWidth": true
+                    });
+                } );
+            </script>
+          </body>
           </div>
             <div style="text-align: center">
         {% endif %}

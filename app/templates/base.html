@@ -24,7 +24,7 @@
               <ul class="nav navbar-nav navbar-right">
                   {% if current_user.is_authenticated %}
                     {% if current_user.is_admin %}
-                      <li><a href="{{ url_for('home.admin_dashboard') }}">Dashboard</a></li>
+                      <li><a href="{{ url_for('home.admin_dashboard') }}">{{current_user.first_name}}'s dashboard</a></li>
                       <li><a href="{{ url_for('admin.list_projects') }}">Project Management</a></li>
                       <li><a href="{{ url_for('admin.list_employees') }}">User Management</a></li>
                       <li><a href="{{ url_for('admin.list_departments') }}">Departments</a></li>
@@ -32,11 +32,11 @@
                       
 
                     {% else %}
-                      <li><a href="{{ url_for('home.dashboard') }}">Dashboard</a></li>
+                      <li><a href="{{ url_for('home.dashboard') }}">{{current_user.first_name}}'s dashboard</a></li>
                       <li><a href="{{ url_for('admin.list_projects') }}">Projects</a></li>
                     {% endif %}
                     <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-                    <li><a><i class="fa fa-user"></i>  Hi, {{ current_user.username }}!</a></li>
+                    <li><a><i class="fa fa-user"></i>  Hi, {{ current_user.first_name }}!</a></li>
                   {% else %}
                     <li><a href="{{ url_for('home.homepage') }}">Home</a></li>
                     <li><a href="{{ url_for('auth.register') }}">Register</a></li>

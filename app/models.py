@@ -3,7 +3,9 @@
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+import re 
 from app import db, login_manager
+
 
 subs = db.Table('subs',
     db.Column('project_id',db.Integer,db.ForeignKey('projects.id', ondelete='cascade')),
@@ -30,13 +32,10 @@ class Employee(UserMixin, db.Model):
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     is_admin = db.Column(db.Boolean, default=False)
-    projects = db.relationship('Project',backref='employee',
+    projects = db.relationship('Project',backref='project_lead',
                                 lazy ='dynamic')
     projects_list = db.relationship('Project',backref='member',lazy='dynamic')
-    # project_list= db.relationship('Project',secondary=subs,backref=db.backref('member',lazy='dynamic')
-    #                                         # cascade='delete-orphan',
-    #                                         # single_parent=False
-    #                                         )
+
     @property
     def password(self):
         """
@@ -96,7 +95,17 @@ class Role(db.Model):
                                 lazy='dynamic')
 
     def __repr__(self):
-        return '<Role: {}>'.format(self.name)
+        return '{}'.format(self.name)
+
+def slugify(s):
+    return re.sub('[^\w]+', '-', s).lower()
+
+
+entry_tags = db.Table('entry_tags',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+    db.Column('project_id', db.Integer, db.ForeignKey('projects.id'))
+)
+
 
 class Project(db.Model):
     """
@@ -108,6 +117,7 @@ class Project(db.Model):
     name = db.Column(db.String(60), unique=True)
     description = db.Column(db.String(200))
     status = db.Column(db.String(200))
+    slug = db.Column(db.String(100), unique=True)
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
     project_lead_id = db.Column(db.Integer, db.ForeignKey('employees.id'))
     project_member= db.relationship('Employee',
@@ -116,9 +126,36 @@ class Project(db.Model):
                                     # cascade='delete-orphan',
                                     single_parent=True
                                                )
-    start_date = db.Column(db.DateTime, nullable=True)
+    start_date = db.Column(db.DateTime, 
+                           # default=datetime.datetime.now,
+                           nullable=True)
+    tags = db.relationship('Tag', secondary=entry_tags,
+        backref=db.backref('projects', lazy='dynamic'))
+
+    def __init__(self, *args, **kwargs):
+        super(Project, self).__init__(*args, **kwargs)
+        self.generate_slug()
+
+    def generate_slug(self):
+        self.slug = ''
+        if self.name:
+            self.slug = slugify(self.name)
+
     def __repr__(self):
         return '<Project: {}>'.format(self.name)
+
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    slug = db.Column(db.String(64), unique=True)
+
+    def __init__(self, *args, **kwargs):
+        super(Tag, self).__init__(*args, **kwargs)
+        self.slug = slugify(self.name)
+
+    def __repr__(self):
+        return '<Tag %s>' % self.name
 
 
 
