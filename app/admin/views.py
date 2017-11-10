@@ -436,7 +436,7 @@ def delete_project(id):
 def download_project():
     check_admin_editor()
     table = [['Project_title','description','Type','Project_phase','Department',
-              'Start_date','Project_lead','Member'],'Progress note']
+              'Start_date','Project_lead','Member','Progress note']]
     projects = Project.query.all()
     for project in projects:
         table.append([project.name,
