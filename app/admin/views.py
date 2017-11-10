@@ -1,12 +1,14 @@
 # app/admin/views.py
 
-from flask import abort, flash, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template, url_for, make_response
 from flask_login import current_user, login_required
 
 from . import admin
 from forms import DepartmentForm,EmployeeAssignForm, RoleForm,ProjectAssignForm
 from .. import db
 from ..models import Department,Role,Employee,Project,Tag
+import pyexcel as pe
+import StringIO
 
 def check_admin():
     """
@@ -426,6 +428,39 @@ def delete_project(id):
     return redirect(url_for('admin.list_projects'))
 
     return render_template(title="Delete Project")
+
+@admin.route('/projects/download_projects',methods =['GET','POST'])
+@login_required
+def download_project():
+    check_admin_editor()
+    table = [['Project_title','description','Type','Project_phase','Department',
+              'Start_date','Project_lead','Member']]
+    projects = Project.query.all()
+    for project in projects:
+        table.append([project.name,
+                      project.description,
+                      project.project_type,
+                      project.project_phase,
+                      project.department.description,
+                      project.start_date,
+                      '{},{} ({},{})'.format(project.project_lead.last_name,
+                                             project.project_lead.first_name,
+                                             project.project_lead.department.name,
+                                             project.project_lead.role.name),
+
+                      ['{},{} ({},{})'.format(m.last_name,
+                                             m.first_name,
+                                             m.department.name,
+                                             m.role.name) for m in project.project_member]])
+    sheet = pe.Sheet(table)
+    io = StringIO.StringIO()
+    sheet.save_to_memory("csv", io)
+    output = make_response(io.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=export.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output
+    return redirect(url_for('admin.list_projects'))
+
 
 
 

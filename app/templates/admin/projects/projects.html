@@ -84,6 +84,10 @@
             <i class="fa fa-plus"></i>
             Add Project
           </a>
+          <a href="{{ url_for('admin.download_project') }}" class="btn btn-default btn-lg">
+            <i class="fa fa-plus"></i>
+            Download projects as CSV
+          </a>
           {%else%}
           {%endif%}
         </div>

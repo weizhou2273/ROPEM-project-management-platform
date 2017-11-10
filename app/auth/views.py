@@ -55,7 +55,7 @@ def login():
             login_user(employee)
 
             # redirect to the appropriate dashboard page
-            if employee.is_admin:
+            if employee.permission.name == 'Admin':
                 return redirect(url_for('home.admin_dashboard'))
             else:
                 return redirect(url_for('home.dashboard'))

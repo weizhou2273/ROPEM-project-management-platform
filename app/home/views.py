@@ -37,7 +37,7 @@ def dashboard():
 @login_required
 def admin_dashboard():
     # prevent non-admins from accessing the page
-    if not current_user.is_admin:
+    if not current_user.permission.name == 'Admin':
         abort(403)
     employee = Employee.query.get_or_404(current_user.id)
     projects = Project.query.filter(Project.project_lead_id==employee.id).all()
