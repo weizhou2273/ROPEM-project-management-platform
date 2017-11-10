@@ -326,7 +326,8 @@ def add_project():
                           department = form.department.data,
                           project_lead = form.project_lead.data,
                           project_member = project_member,
-                          tags = form.tags.data
+                          tags = form.tags.data,
+                          progress_note = form.progress.note.data
                           )
         try:
             # add project to the database
@@ -376,6 +377,7 @@ def edit_project(id):
         project.start_date = form.start_date.data
         project.project_member = [x for x in project.project_member + project_member if x is not None]
         project.tags = form.tags.data
+        project.progress_note = form.progress_note.data
         db.session.add(project)
         db.session.commit()
         flash('You have successfully edited the project.')
@@ -434,7 +436,7 @@ def delete_project(id):
 def download_project():
     check_admin_editor()
     table = [['Project_title','description','Type','Project_phase','Department',
-              'Start_date','Project_lead','Member']]
+              'Start_date','Project_lead','Member'],'Progress note']
     projects = Project.query.all()
     for project in projects:
         table.append([project.name,
@@ -451,7 +453,8 @@ def download_project():
                       ['{},{} ({},{})'.format(m.last_name,
                                              m.first_name,
                                              m.department.name,
-                                             m.role.name) for m in project.project_member]])
+                                             m.role.name) for m in project.project_member],
+                      project.progress_note])
     sheet = pe.Sheet(table)
     io = StringIO.StringIO()
     sheet.save_to_memory("csv", io)

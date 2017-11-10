@@ -127,6 +127,7 @@ class ProjectAssignForm(FlaskForm):
     						model=Employee)
     start_date = DateField('Project start date', format="%m/%d/%Y",validators=[DataRequired()])
     tags = TagField('Tags', description = 'Separate multiple tags with commas.')
+    progress_note = TextAreaField('Progress note')
 
 
 

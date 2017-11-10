@@ -150,7 +150,7 @@ class Project(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), unique=True)
-    description = db.Column(db.String(200))
+    description = db.Column(db.Text(200000))
     status = db.Column(db.String(200))
     project_type = db.Column(db.String(200))
     project_phase = db.Column(db.String(200))
@@ -168,6 +168,7 @@ class Project(db.Model):
                            nullable=True)
     tags = db.relationship('Tag', secondary=entry_tags,
         backref=db.backref('projects', lazy='dynamic'))
+    progress_note  = db.Column(db.Text(200000))
 
     def __init__(self, *args, **kwargs):
         super(Project, self).__init__(*args, **kwargs)
