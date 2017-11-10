@@ -47,3 +47,5 @@ def admin_dashboard():
                            employee = employee, 
                            join_projects = join_projects,
                            title='Projects')
+
+

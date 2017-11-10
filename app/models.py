@@ -1,11 +1,12 @@
 # app/models.py
 
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
+from flask import current_app    
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import re 
 from app import db, login_manager
-
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer,URLSafeTimedSerializer
 
 subs = db.Table('subs',
     db.Column('project_id',db.Integer,db.ForeignKey('projects.id', ondelete='cascade')),
@@ -35,6 +36,9 @@ class Employee(UserMixin, db.Model):
     projects = db.relationship('Project',backref='project_lead',
                                 lazy ='dynamic')
     projects_list = db.relationship('Project',backref='member',lazy='dynamic')
+    permission_id = db.Column(db.Integer, db.ForeignKey('permissions.id'))
+
+
 
     @property
     def password(self):
@@ -43,6 +47,10 @@ class Employee(UserMixin, db.Model):
         """
         raise AttributeError('password is not a readable attribute.')
 
+    def get_token(self, email, expiration=1800):
+        s = Serializer(current_app.config['SECRET_KEY'], expiration)
+        return s.dumps({'user': self.id}).decode('utf-8')
+ 
     @password.setter
     def password(self, password):
         """
@@ -56,13 +64,40 @@ class Employee(UserMixin, db.Model):
         """
         return check_password_hash(self.password_hash, password)
 
+
+    @staticmethod
+    def verify_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        id = data.get('user')
+        if id:
+            return Employee.query.get(id)
+        return None
+
     def __repr__(self):
         return '{}'.format(self.username)
+
+
 
 # Set up user_loader
 @login_manager.user_loader
 def load_user(user_id):
     return Employee.query.get(int(user_id))
+
+
+class Permission(db.Model):
+    __tablename__ = 'permissions'
+    id = db.Column(db.Integer,primary_key=True)
+    name = db.Column(db.String(60), unique=True)
+
+    employees = db.relationship('Employee', backref='permission',
+                                lazy='dynamic')
+    def __repr__(self):
+        return '<Permission: {}>'.format(self.name)
+
 
 class Department(db.Model):
     """
@@ -117,6 +152,8 @@ class Project(db.Model):
     name = db.Column(db.String(60), unique=True)
     description = db.Column(db.String(200))
     status = db.Column(db.String(200))
+    project_type = db.Column(db.String(200))
+    project_phase = db.Column(db.String(200))
     slug = db.Column(db.String(100), unique=True)
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
     project_lead_id = db.Column(db.Integer, db.ForeignKey('employees.id'))

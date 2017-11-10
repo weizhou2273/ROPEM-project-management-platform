@@ -6,13 +6,17 @@ from flask_login import current_user, login_required
 from . import admin
 from forms import DepartmentForm,EmployeeAssignForm, RoleForm,ProjectAssignForm
 from .. import db
-from ..models import Department,Role,Employee,Project
+from ..models import Department,Role,Employee,Project,Tag
 
 def check_admin():
     """
     Prevent non-admins from accessing the page
     """
-    if not current_user.is_admin:
+    if not current_user.permission.name == 'Admin':
+        abort(403)
+
+def check_admin_editor():
+    if current_user.permission.name == 'Viewer':
         abort(403)
 
 # Department Views
@@ -111,7 +115,7 @@ def delete_department(id):
 @admin.route('/roles')
 @login_required
 def list_roles():
-    check_admin()
+    check_admin_editor()
     """
     List all roles
     """
@@ -203,7 +207,7 @@ def list_employees():
     """
     List all employees
     """
-    check_admin()
+    check_admin_editor()
 
     employees = Employee.query.all()
     return render_template('admin/employees/employees.html',
@@ -215,7 +219,7 @@ def assign_employee(id):
     """
     Assign a department and a role to an employee
     """
-    check_admin()
+    # check_admin()
 
     employee = Employee.query.get_or_404(id)
 
@@ -226,14 +230,16 @@ def assign_employee(id):
     form = EmployeeAssignForm(obj=employee)
     if form.validate_on_submit():
         employee.email = form.email.data
+        employee.username = form.username.data
         employee.first_name = form.first_name.data
         employee.last_name = form.last_name.data
         employee.department = form.department.data
         employee.role = form.role.data
-        employee.is_admin = form.is_admin.data
+        # employee.is_admin = form.is_admin.data
+        employee.permission = form.permission.data
         db.session.add(employee)
         db.session.commit()
-        flash('You have successfully assigned a department and role.')
+        flash("You have successfully edit {}'s profile.".format(form.first_name.data))
 
         # redirect to the roles page
         return redirect(url_for('admin.list_employees'))
@@ -241,6 +247,18 @@ def assign_employee(id):
     return render_template('admin/employees/employee.html',
                            employee=employee, form=form,
                            title='Assign Employee')
+
+@admin.route('/employees/view_profile/<int:id>', methods=['GET', 'POST'])
+@login_required
+def view_profile(id):
+    """
+    View user's profile
+    """
+    employee = Employee.query.get_or_404(id)
+    return render_template('admin/employees/view_profile.html',
+                           employee=employee,
+                           title='View Profile')
+
 
 # Project Views
 @admin.route('/projects')
@@ -254,7 +272,7 @@ def list_projects():
     projects = Project.query.all()
     return render_template('admin/projects/projects.html',
                            projects=projects, title='Projects')
-    
+
 @admin.route('/member_projects/<int:id>')
 @login_required
 def list_member_projects(id):
@@ -288,7 +306,7 @@ def add_project():
     """
     Add a role to the database
     """
-    check_admin()
+    check_admin_editor()
 
     add_project = True
 
@@ -301,7 +319,8 @@ def add_project():
     if form.validate_on_submit():
         project = Project(name=form.name.data,
                           description=form.description.data,
-                          status = form.status.data,
+                          project_type = form.project_type.data,
+                          project_phase = form.project_phase.data,
                           department = form.department.data,
                           project_lead = form.project_lead.data,
                           project_member = project_member,
@@ -330,7 +349,7 @@ def edit_project(id):
     """
     Edit a project
     """
-    check_admin()
+    check_admin_editor()
  
     # add_project = False  
     project = Project.query.get_or_404(id)
@@ -348,7 +367,8 @@ def edit_project(id):
     if form.validate_on_submit():
         project.name = form.name.data
         project.description = form.description.data
-        project.status= form.status.data
+        project.project_type= form.project_type.data
+        project.project_phase = form.project_phase.data
         project.department = form.department.data
         project.project_lead = form.project_lead.data
         project.start_date = form.start_date.data
@@ -375,7 +395,7 @@ def index():
 @admin.route('/projects/delete/<int:pid>/<int:mid>', methods=['GET', 'POST'])
 @login_required
 def delete_project_member(pid,mid):
-    check_admin()
+    check_admin_editor()
 
     project = Project.query.get_or_404(pid)
     member  = Employee.query.get_or_404(mid)

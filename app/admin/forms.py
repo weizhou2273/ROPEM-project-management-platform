@@ -11,7 +11,7 @@ from wtforms_alchemy.fields import QuerySelectMultipleField
 from wtforms_alchemy import ModelForm, ModelFieldList
 from wtforms import widgets
 from wtforms.fields import FormField
-from ..models import Department, Role, Project, Employee, Tag
+from ..models import Department, Role, Project, Employee, Tag, Permission 
 
 
 
@@ -39,12 +39,16 @@ class EmployeeAssignForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
 
     department = QuerySelectField(query_factory=lambda: Department.query.all(),
                                   get_label="name")
     role = QuerySelectField(query_factory=lambda: Role.query.all(),
                             get_label="name")
-    is_admin = BooleanField('is_admin',default=False)
+    
+
+    permission = QuerySelectField(query_factory = lambda: Permission.query.all(),
+                                 get_label = 'name', default = 'Viewer')
 
     submit = SubmitField('Submit')
 
@@ -105,7 +109,11 @@ class TagField(StringField):
 class ProjectAssignForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
-    status = SelectField('status', choices=[('Completed','Completed'),('In progress','In progress'),('On going','On going') ])
+    project_type = SelectField('Project type', choices=[('Ad-hoc','Ad-hoc'),
+                                                  ('Recurrent','Recurrent') ],default=None)      
+    project_phase = SelectField('Project phase', choices=[(i,i) for i in   
+                                                   ('Conception','Planning','Development','Close')],
+                                                   default=None)      
     department = QuerySelectField(query_factory=lambda: Department.query.all(),
                                    get_label= 'description',
                                    allow_blank=True)

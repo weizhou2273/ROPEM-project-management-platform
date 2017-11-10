@@ -9,16 +9,26 @@
     <div class="middle">
       <div class="inner">
         <div class="center">
-            <h1> Assign Departments and Roles </h1>
-            <br/>
-            <p>
-                Select a department and role to assign to
-                <span style="color: #aec251;">
+            <h1> Edit <span style="color: #aec251;">
                     {{ employee.first_name }} {{ employee.last_name }}
-                </span>
-            </p>
-            <br/>
-            {{ wtf.quick_form(form) }}
+                </span> 'sprofile </h1>
+            
+            <form  method="post" role="form" action="">       
+                <dl>
+            {{ form.csrf_token }}
+            {{ wtf.form_field(form.email) }}
+            {{ wtf.form_field(form.username)}}    
+            {{ wtf.form_field(form.first_name) }}
+            {{ wtf.form_field(form.last_name) }}
+            {{ wtf.form_field(form.department) }}
+            {{ wtf.form_field(form.role) }}
+            {{ wtf.form_field(form.department) }}
+            {%if current_user.permission.name=='Admin'%}
+            {{ wtf.form_field(form.permission)}}
+            {%endif%}
+            {{ wtf.form_field(form.submit) }}
+            </dl>
+            </form>
         </div>
       </div>
     </div>

@@ -28,9 +28,14 @@
                 {{ form.csrf_token }}
                 {{ wtf.form_field(form.name) }}
                 {{ wtf.form_field(form.description)}}
-                {{ wtf.form_field(form.status) }} {{ wtf.form_field(form.department) }}
+                {{ wtf.form_field(form.project_type) }} 
+                {{ wtf.form_field(form.project_phase) }} 
+                {{ wtf.form_field(form.department) }}
                 {{ wtf.form_field(form.project_lead) }}
-                {{ wtf.form_field(form.start_date) }} <h6>(Date format: MM/DD/YYYY)</h6>
+                {{'Project start date'}}
+                <h1></h1>
+                {{ form.start_date(class='dtpick') }}
+                <h1></h1>
                 {{ wtf.form_field(form.tags) }}
                 <h1></h1>
 
@@ -76,7 +81,14 @@
                 <input class='btn btn-primary' type="submit" name="submit" value='Submit'>
                 <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
                 <script src="{{ url_for('static', filename='js/page.js') }}"></script>                
-
+                <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+                <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+                <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+                <script>
+                $(function() {
+                  $( ".dtpick" ).datepicker();
+                });
+                </script>
                 </dl>
             </form>
         </div>

@@ -22,10 +22,8 @@
                   <th width="15%"> Name </th>
                   <th width="5%"> Site </th>
                   <th width="30%"> Role </th>
-                 <!--  <th width="15%"> Lead Project Count </th>
-                  <th width="15%"> Involved Project Count </th> -->
                   <th width="15%"> Overall Project Count </th>
-                  <th width="15%"> Administrator </th>
+                  <th width="15%"> Permission </th>
                   <th width="15%"> Edit Profile</th>
                 </tr>
               </thead>
@@ -74,11 +72,7 @@
                         {% endif %}
                       </td>
                       <td>
-                        {% if employee.is_admin == 1%}
-                          Yes
-                        {% else %}
-                          No
-                        {% endif %}
+                        {{employee.permission.name}}
                       </td>
                       <td>
                         <a href="{{ url_for('admin.assign_employee', id=employee.id) }}">

@@ -140,7 +140,7 @@ p.copyright {
     color:#996633;
     text-shadow:0px 1px 0px rgba(255,255,255,.4);
  
-    padding:0.00em 0.417em 0.417em 0.917em;
+    padding:0.100em 0.417em 0.417em 0.917em;
  
     border-top:1px solid #d99d38;
     border-right:1px solid #d99d38;
@@ -173,8 +173,8 @@ p.copyright {
 .tag:before {
     content:'';
  
-    width:1.30em;
-    height:1.358em;
+    width:1.400em;
+    height:1.458em;
  
     background-image: -webkit-linear-gradient(left top, rgb(254, 218, 113), rgb(254, 186, 71));
     background-image: -moz-linear-gradient(left top, rgb(254, 218, 113), rgb(254, 186, 71));

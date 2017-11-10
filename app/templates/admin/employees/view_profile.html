@@ -1,0 +1,55 @@
+<!-- app/templates/admin/employees/view_profile.html -->
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% block title %}Assign Employee{% endblock %}
+{% block body %}
+<div class="content-section">
+ <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <div class="center">
+            <h1 style="text-align:center;"> {{current_user.first_name}} {{current_user.last_name}}</h1>
+            {{ utils.flashed_messages() }}
+            <hr class="intro-divider">
+            <h1></h1>
+            <h1></h1>
+            <div style="text-align: center">
+            <a href="{{ url_for('admin.assign_employee', id=current_user.id) }}" class="btn btn-default btn-lg" >
+            <i class="fa fa-plus"></i>
+            Edit Profile
+          </a>
+          <h1></h1>
+            <h1></h1>
+            </div>  
+            <table class="table table-striped "> 
+              <!-- <thead> -->
+                <tr>
+                  <td width="20%"><i class="glyphicon glyphicon-envelope"></i>  Email</td> <td>{{ current_user.email}}</td>
+                </tr>
+                                <tr>
+                  <td width="20%"><i class="glyphicon glyphicon-user"></i>  Kerbo's ID</td> <td>{{ current_user.username}}</td>
+                </tr>
+                <tr>
+                  <td width="20%"><i class="glyphicon glyphicon-user"></i>   First Name</td> <td>{{ current_user.first_name }}</td>
+                </tr>
+                <tr>
+                  <td width="20%"><i class="glyphicon glyphicon-user"></i>   Last Name</td> <td>{{ current_user.last_name }}</td>
+                </tr>
+                <tr>
+                  <td width="20%"> Department</td> <td>{{ current_user.department.description }}</td>
+                </tr>
+                <tr>
+                  <td width="20%"> Role </td> <td>{{current_user.role.name }}</td>
+                </tr> 
+                <tr>
+                  <td width="20%"> Permission </td> <td>{{current_user.permission.name }}</td>
+                </tr> 
+            </table>    
+            
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

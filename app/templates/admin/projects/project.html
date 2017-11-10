@@ -30,9 +30,12 @@
                 {{ form.csrf_token }}
                 {{ wtf.form_field(form.name) }}
                 {{ wtf.form_field(form.description)}}
-                {{ wtf.form_field(form.status) }} {{ wtf.form_field(form.department) }}
+                {{ wtf.form_field(form.project_type) }} {{ wtf.form_field(form.department) }}
                 {{ wtf.form_field(form.project_lead) }}
-                {{ wtf.form_field(form.start_date) }}
+                {{'Project start date'}}
+                <h1></h1>
+                {{ form.start_date(class='dtpick') }}
+                <h1></h1>
                 {{ wtf.form_field(form.tags) }}
                 <h1></h1>
 
@@ -69,6 +72,14 @@
                       "bAutoWidth": true
                     });
                 } );
+            </script>
+            <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+            <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+            <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+            <script>
+            $(function() {
+              $( ".dtpick" ).datepicker();
+            });
             </script>
           </body>                
 
