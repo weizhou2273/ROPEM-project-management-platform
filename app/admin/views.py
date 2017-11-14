@@ -10,6 +10,7 @@ from ..models import Department,Role,Employee,Project,Tag
 import pyexcel as pe
 import StringIO
 
+
 def check_admin():
     """
     Prevent non-admins from accessing the page
@@ -18,6 +19,9 @@ def check_admin():
         abort(403)
 
 def check_admin_editor():
+    """
+    Prevent viewer form accessing the page
+    """
     if current_user.permission.name == 'Viewer':
         abort(403)
 
@@ -219,15 +223,9 @@ def list_employees():
 @login_required
 def assign_employee(id):
     """
-    Assign a department and a role to an employee
+    Edit an employee's profile
     """
-    # check_admin()
-
     employee = Employee.query.get_or_404(id)
-
-    # prevent admin from being assigned a department or role
-    # if employee.is_admin:
-    #     abort(403)
 
     form = EmployeeAssignForm(obj=employee)
     if form.validate_on_submit():
@@ -237,7 +235,6 @@ def assign_employee(id):
         employee.last_name = form.last_name.data
         employee.department = form.department.data
         employee.role = form.role.data
-        # employee.is_admin = form.is_admin.data
         employee.permission = form.permission.data
         db.session.add(employee)
         db.session.commit()
@@ -245,7 +242,6 @@ def assign_employee(id):
 
         # redirect to the roles page
         return redirect(url_for('admin.list_employees'))
-
     return render_template('admin/employees/employee.html',
                            employee=employee, form=form,
                            title='Assign Employee')
@@ -269,8 +265,6 @@ def list_projects():
     """
     List all projects
     """
-    # check_admin()
-
     projects = Project.query.all()
     return render_template('admin/projects/projects.html',
                            projects=projects, title='Projects')
@@ -279,7 +273,7 @@ def list_projects():
 @login_required
 def list_member_projects(id):
     """
-    List all projects of selected member
+    List all member of selected project
     """
     employee = Employee.query.get_or_404(id)
     projects = Project.query.filter(Project.project_lead_id==id).all()
@@ -294,7 +288,7 @@ def list_member_projects(id):
 @login_required
 def view_project(id):
     """
-    View project detail
+    View a project detail
     """
 
     project = Project.query.get_or_404(id)
@@ -306,7 +300,7 @@ def view_project(id):
 @login_required
 def add_project():
     """
-    Add a role to the database
+    Add a project to the database
     """
     check_admin_editor()
 
@@ -361,9 +355,6 @@ def edit_project(id):
 
     project_member = []
     for idx, member in enumerate(form.members.data):
-        # if member == None:
-        #     project_member = project_member
-        # else:
         project_member.append(member['project_member'])
   
 
@@ -380,6 +371,7 @@ def edit_project(id):
         project.progress_note = form.progress_note.data
         db.session.add(project)
         db.session.commit()
+
         flash('You have successfully edited the project.')
         return redirect(url_for('admin.view_project',id=id))
     return render_template('admin/projects/edit_project.html', project=project,
@@ -399,8 +391,8 @@ def index():
 @admin.route('/projects/delete/<int:pid>/<int:mid>', methods=['GET', 'POST'])
 @login_required
 def delete_project_member(pid,mid):
+    #Only admin and editor can delete project member
     check_admin_editor()
-
     project = Project.query.get_or_404(pid)
     member  = Employee.query.get_or_404(mid)
     project.project_member.remove(member)
@@ -417,9 +409,9 @@ def delete_project_member(pid,mid):
 @login_required
 def delete_project(id):
     """
-    Delete a project member from the database
+    Delete a project from the database
     """
-    check_admin()
+    check_admin() # Only Admin can delete project
 
     project = Project.query.get_or_404(id)
     db.session.delete(project)
@@ -435,6 +427,7 @@ def delete_project(id):
 @login_required
 def download_project():
     check_admin_editor()
+    # Spreadsheet column name # 
     table = [['Project_title','description','Type','Project_phase','Department',
               'Start_date','Project_lead','Member','Progress note']]
     projects = Project.query.all()
